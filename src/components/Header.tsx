@@ -1,11 +1,20 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Wrench } from 'lucide-react';
+import { Menu, Wrench, Fingerprint, Brain, Fish, Save, FolderOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { saveThemesToFile, loadThemesFromFile } from '@/lib/actions';
+import { useToast } from '@/hooks/use-toast';
+
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -18,6 +27,64 @@ const navLinks = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveThemes = async () => {
+    const result = await saveThemesToFile();
+    if (result.success && result.content) {
+      const blob = new Blob([result.content], { type: 'text/css;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = result.filename || 'themes.css';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({
+        title: 'Success',
+        description: 'Themes saved to file.',
+      });
+    } else {
+      toast({
+        title: 'Error',
+        description: result.message || 'Could not save themes.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleLoadThemes = () => {
+    fileInputRef.current?.click();
+  };
+  
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const content = e.target?.result as string;
+        const result = await loadThemesFromFile(content);
+         if (result.success) {
+            toast({
+                title: 'Success!',
+                description: result.message,
+            });
+        } else {
+             toast({
+                title: 'Error!',
+                description: result.message,
+                variant: 'destructive'
+            });
+        }
+      };
+      reader.readAsText(file);
+    }
+     // Reset file input
+    if(fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,6 +113,34 @@ export default function Header() {
           <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground">
             <Link href="/contact">Start Here</Link>
           </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Fingerprint className="h-5 w-5" />
+                <span className="sr-only">Theme Management</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleSaveThemes}>
+                <Brain className="mr-2 h-4 w-4" />
+                <span>Save Themes</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLoadThemes}>
+                <Fish className="mr-2 h-4 w-4" />
+                <span>Load Themes</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept=".css"
+          />
+
+
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button

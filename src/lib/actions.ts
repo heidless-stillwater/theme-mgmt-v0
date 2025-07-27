@@ -53,8 +53,6 @@ export async function saveThemesToFile() {
     const filePath = path.join(process.cwd(), 'src', 'app', 'globals.css');
     const fileContent = await fs.readFile(filePath, 'utf-8');
     
-    // This is a simplified example. In a real app, you might want to format this as JSON
-    // or another structured format. For now, we'll just return the raw CSS content.
     return { success: true, content: fileContent, filename: 'themes.css' };
   } catch (error) {
     console.error('Error saving themes:', error);
@@ -78,26 +76,27 @@ export async function getThemes(): Promise<{ success: boolean, themes?: string[]
     const filePath = path.join(process.cwd(), 'src', 'app', 'globals.css');
     const fileContent = await fs.readFile(filePath, 'utf-8');
     
-    // A simple regex to find theme definitions like :root { ... } or .dark { ... }
-    const themeRegex = /(?<!\S)([\w.-]+)\s*\{[^{}]*--background:[^{}]*}/g;
+    const themeRegex = /\.(?<name>[\w-]+)\s*\{\s*--primary:/g;
     
-    const themes: string[] = [];
+    const themes: string[] = ['default'];
     let match;
     while ((match = themeRegex.exec(fileContent)) !== null) {
-      let themeName = match[1].trim();
-      if (themeName === ':root') {
-        themeName = 'light';
-      } else if (themeName.startsWith('.')) {
-        themeName = themeName.substring(1);
+      if (match.groups?.name) {
+        themes.push(match.groups.name);
       }
-      themes.push(themeName);
     }
+    
+    // Add light and dark separately if not found as classes
+    if (!themes.includes('light')) themes.unshift('light');
+    if (!themes.includes('dark')) themes.splice(1, 0, 'dark');
 
-    if (themes.length === 0) {
+    const uniqueThemes = [...new Set(themes)];
+
+    if (uniqueThemes.length === 0) {
       return { success: false, message: 'No themes found.' };
     }
 
-    return { success: true, themes };
+    return { success: true, themes: uniqueThemes };
   } catch (error) {
     console.error('Error getting themes:', error);
     return { success: false, message: 'Failed to get themes.' };

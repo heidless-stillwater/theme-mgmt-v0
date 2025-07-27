@@ -64,13 +64,11 @@ export default function Header() {
 
   const handleColorThemeChange = (colorTheme: string) => {
     const root = document.documentElement;
-    // Remove any existing color theme classes
     themes.forEach(t => {
       if (t.name !== 'default') {
         root.classList.remove(t.name);
       }
     });
-    // Add the new color theme class
     if (colorTheme !== 'default') {
       root.classList.add(colorTheme);
     }
@@ -115,6 +113,8 @@ export default function Header() {
                 title: 'Success!',
                 description: result.message,
             });
+            // Force a reload to apply the new CSS file content
+            window.location.reload();
         } else {
              toast({
                 title: 'Error!',
@@ -125,7 +125,6 @@ export default function Header() {
       };
       reader.readAsText(file);
     }
-     // Reset file input
     if(fileInputRef.current) {
         fileInputRef.current.value = '';
     }
@@ -170,13 +169,13 @@ export default function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <div className="flex items-center justify-between px-2 py-1.5">
-                    <Label htmlFor="dark-mode" className="flex items-center gap-2 text-sm cursor-pointer">
-                        {resolvedTheme === 'dark' ? <Moon/> : <Sun/>}
+                    <Label htmlFor="dark-mode" className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                        {resolvedTheme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                         <span>Dark Mode</span>
                     </Label>
                     <Switch
                         id="dark-mode"
-                        checked={resolvedTheme === 'dark'}
+                        checked={theme === 'dark'}
                         onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                     />
                 </div>

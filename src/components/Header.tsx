@@ -16,6 +16,7 @@ import {
 import { saveThemesToFile, loadThemesFromFile } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeListModal } from '@/components/ThemeListModal';
+import { ThemeModeToggle } from './ThemeModeToggle';
 
 
 const navLinks = [
@@ -117,6 +118,8 @@ export default function Header() {
             <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="/contact">Start Here</Link>
             </Button>
+            
+            <ThemeModeToggle />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -83,7 +83,7 @@ export default function Header() {
         zip.file(file.name, file.content);
       });
       
-      zip.generateAsync({ type: 'blob' }).then(blob => {
+      zip.generateAsync({ type: 'blob', compression: 'DEFLATE' }).then(blob => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = 'theme-config.zip';

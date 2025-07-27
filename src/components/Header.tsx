@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -33,6 +33,7 @@ const navLinks = [
 ];
 
 const themes = [
+    { name: "default", primary: "hsl(231 48% 48%)", accent: "hsl(36 100% 62%)" },
     { name: "red", primary: "hsl(0 72% 51%)", accent: "hsl(0 86% 91%)" },
     { name: "orange", primary: "hsl(25 95% 53%)", accent: "hsl(25 97% 88%)" },
     { name: "amber", primary: "hsl(38 92% 50%)", accent: "hsl(45 93% 85%)" },
@@ -60,6 +61,20 @@ export default function Header() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const handleColorThemeChange = (colorTheme: string) => {
+    const root = document.documentElement;
+    // Remove any existing color theme classes
+    themes.forEach(t => {
+      if (t.name !== 'default') {
+        root.classList.remove(t.name);
+      }
+    });
+    // Add the new color theme class
+    if (colorTheme !== 'default') {
+      root.classList.add(colorTheme);
+    }
+  };
 
   const handleSaveThemes = async () => {
     const result = await saveThemesToFile();
@@ -172,9 +187,9 @@ export default function Header() {
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
                         {themes.map((themeItem) => (
-                            <DropdownMenuItem key={themeItem.name} onClick={() => setTheme(themeItem.name)} className="capitalize">
+                            <DropdownMenuItem key={themeItem.name} onClick={() => handleColorThemeChange(themeItem.name)} className="capitalize">
                                 <ColorfulThemeIcon primary={themeItem.primary} accent={themeItem.accent} className="mr-2" />
-                                {themeItem.name}
+                                {themeItem.name === 'default' ? 'Default' : themeItem.name}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuSubContent>

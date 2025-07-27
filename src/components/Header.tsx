@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Wrench, Fingerprint, Brain, Fish, Activity, Sun, Moon } from 'lucide-react';
+import { Menu, Wrench, Fingerprint, Brain, Fish, Activity, Sun, Moon, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import {
@@ -20,7 +20,9 @@ import { saveThemesToFile, loadThemesFromFile } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeListModal } from '@/components/ThemeListModal';
 import { useTheme } from 'next-themes';
-
+import { ColorfulThemeIcon } from '@/components/icons/ColorfulThemeIcon';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -31,8 +33,25 @@ const navLinks = [
 ];
 
 const themes = [
-    "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"
-]
+    { name: "red", primary: "hsl(0 72% 51%)", accent: "hsl(0 86% 91%)" },
+    { name: "orange", primary: "hsl(25 95% 53%)", accent: "hsl(25 97% 88%)" },
+    { name: "amber", primary: "hsl(38 92% 50%)", accent: "hsl(45 93% 85%)" },
+    { name: "yellow", primary: "hsl(48 96% 50%)", accent: "hsl(54 96% 85%)" },
+    { name: "lime", primary: "hsl(84 79% 45%)", accent: "hsl(90 80% 88%)" },
+    { name: "green", primary: "hsl(142 76% 36%)", accent: "hsl(142 60% 88%)" },
+    { name: "emerald", primary: "hsl(158 79% 42%)", accent: "hsl(158 65% 88%)" },
+    { name: "teal", primary: "hsl(172 80% 38%)", accent: "hsl(172 70% 88%)" },
+    { name: "cyan", primary: "hsl(190 95% 45%)", accent: "hsl(190 85% 90%)" },
+    { name: "sky", primary: "hsl(204 94% 48%)", accent: "hsl(204 90% 90%)" },
+    { name: "blue", primary: "hsl(217 91% 60%)", accent: "hsl(217 95% 92%)" },
+    { name: "indigo", primary: "hsl(240 82% 60%)", accent: "hsl(240 85% 92%)" },
+    { name: "violet", primary: "hsl(262 88% 65%)", accent: "hsl(262 90% 92%)" },
+    { name: "purple", primary: "hsl(271 91% 65%)", accent: "hsl(271 94% 92%)" },
+    { name: "fuchsia", primary: "hsl(291 84% 60%)", accent: "hsl(291 88% 92%)" },
+    { name: "pink", primary: "hsl(322 84% 60%)", accent: "hsl(322 88% 92%)" },
+    { name: "rose", primary: "hsl(340 82% 60%)", accent: "hsl(340 86% 92%)" }
+];
+
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +59,7 @@ export default function Header() {
   const pathname = usePathname();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   const handleSaveThemes = async () => {
     const result = await saveThemesToFile();
@@ -130,16 +149,41 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Fingerprint className="h-5 w-5" />
+                  <Palette className="h-5 w-5" />
                   <span className="sr-only">Theme Management</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                 <DropdownMenuItem onClick={() => setIsThemeModalOpen(true)}>
+                <div className="flex items-center justify-between px-2 py-1.5">
+                    <Label htmlFor="dark-mode" className="flex items-center gap-2 text-sm cursor-pointer">
+                        {resolvedTheme === 'dark' ? <Moon/> : <Sun/>}
+                        <span>Dark Mode</span>
+                    </Label>
+                    <Switch
+                        id="dark-mode"
+                        checked={resolvedTheme === 'dark'}
+                        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                    />
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                        <span>Color Themes</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                        {themes.map((theme) => (
+                            <DropdownMenuItem key={theme.name} onClick={() => setTheme(theme.name)} className="capitalize">
+                                <ColorfulThemeIcon primary={theme.primary} accent={theme.accent} className="mr-2" />
+                                {theme.name}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setIsThemeModalOpen(true)}>
                   <Activity className="mr-2 h-4 w-4" />
                   <span>List Themes</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSaveThemes}>
                   <Brain className="mr-2 h-4 w-4" />
                   <span>Save Themes</span>
@@ -148,28 +192,6 @@ export default function Header() {
                   <Fish className="mr-2 h-4 w-4" />
                   <span>Load Themes</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                 <DropdownMenuItem onClick={() => setTheme('light')}>
-                    <Sun className="mr-2 h-4 w-4" />
-                    <span>Light</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
-                    <Moon className="mr-2 h-4 w-4" />
-                    <span>Dark</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                        <span>Colorful</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent>
-                        {themes.map((theme) => (
-                            <DropdownMenuItem key={theme} onClick={() => setTheme(theme)} className="capitalize">
-                                {theme}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuSubContent>
-                </DropdownMenuSub>
               </DropdownMenuContent>
             </DropdownMenu>
             <input

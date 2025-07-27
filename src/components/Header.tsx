@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Wrench, Fingerprint, Brain, Fish, Activity, Sun, Moon, Palette } from 'lucide-react';
+import { Menu, Wrench, Palette, Sun, Moon, Activity, Brain, Fish } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import {
@@ -171,10 +171,10 @@ export default function Header() {
                         <span>Color Themes</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
-                        {themes.map((theme) => (
-                            <DropdownMenuItem key={theme.name} onClick={() => setTheme(theme.name)} className="capitalize">
-                                <ColorfulThemeIcon primary={theme.primary} accent={theme.accent} className="mr-2" />
-                                {theme.name}
+                        {themes.map((themeItem) => (
+                            <DropdownMenuItem key={themeItem.name} onClick={() => setTheme(themeItem.name)} className="capitalize">
+                                <ColorfulThemeIcon primary={themeItem.primary} accent={themeItem.accent} className="mr-2" />
+                                {themeItem.name}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuSubContent>

@@ -10,7 +10,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
 } from '@/components/ui/dropdown-menu';
+
+const themes = [
+    "light", "dark", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"
+]
 
 export function ThemeModeToggle() {
   const { setTheme } = useTheme();
@@ -34,6 +42,19 @@ export function ThemeModeToggle() {
         <DropdownMenuItem onClick={() => setTheme('system')}>
           System
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+                <span>Colorful</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+                {themes.slice(2).map((theme) => (
+                    <DropdownMenuItem key={theme} onClick={() => setTheme(theme)} className="capitalize">
+                        {theme}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuSubContent>
+        </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );

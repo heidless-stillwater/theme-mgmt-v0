@@ -76,6 +76,24 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .red { --primary: 0 72% 51%; --accent: 0 84% 60%; --ring: 0 72% 51%; }
+  .orange { --primary: 25 95% 53%; --accent: 25 98% 65%; --ring: 25 95% 53%; }
+  .amber { --primary: 38 92% 50%; --accent: 38 95% 60%; --ring: 38 92% 50%; }
+  .yellow { --primary: 48 96% 50%; --accent: 48 98% 62%; --ring: 48 96% 50%; }
+  .lime { --primary: 84 79% 45%; --accent: 84 82% 55%; --ring: 84 79% 45%; }
+  .green { --primary: 142 76% 36%; --accent: 142 80% 46%; --ring: 142 76% 36%; }
+  .emerald { --primary: 158 79% 42%; --accent: 158 82% 52%; --ring: 158 79% 42%; }
+  .teal { --primary: 172 80% 38%; --accent: 172 84% 48%; --ring: 172 80% 38%; }
+  .cyan { --primary: 190 95% 45%; --accent: 190 98% 55%; --ring: 190 95% 45%; }
+  .sky { --primary: 204 94% 48%; --accent: 204 97% 58%; --ring: 204 94% 48%; }
+  .blue { --primary: 217 91% 60%; --accent: 217 94% 70%; --ring: 217 91% 60%; }
+  .indigo { --primary: 240 82% 60%; --accent: 240 85% 70%; --ring: 240 82% 60%; }
+  .violet { --primary: 262 88% 65%; --accent: 262 91% 75%; --ring: 262 88% 65%; }
+  .purple { --primary: 271 91% 65%; --accent: 271 94% 75%; --ring: 271 91% 65%; }
+  .fuchsia { --primary: 291 84% 60%; --accent: 291 87% 70%; --ring: 291 84% 60%; }
+  .pink { --primary: 322 84% 60%; --accent: 322 87% 70%; --ring: 322 84% 60%; }
+  .rose { --primary: 340 82% 60%; --accent: 340 85% 70%; --ring: 340 82% 60%; }
 }
 
 @layer base {

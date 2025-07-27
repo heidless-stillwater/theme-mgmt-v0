@@ -23,6 +23,7 @@ import { useTheme } from 'next-themes';
 import { ColorfulThemeIcon } from '@/components/icons/ColorfulThemeIcon';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import JSZip from 'jszip';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -76,17 +77,23 @@ export default function Header() {
 
   const handleSaveThemes = async () => {
     const result = await saveThemesToFile();
-    if (result.success && result.content) {
-      const blob = new Blob([result.content], { type: 'text/css;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = result.filename || 'themes.css';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast({
-        title: 'Success',
-        description: 'Themes saved to file.',
+    if (result.success && result.files) {
+      const zip = new JSZip();
+      result.files.forEach(file => {
+        zip.file(file.name, file.content);
+      });
+      
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'theme-config.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast({
+          title: 'Success',
+          description: 'Theme configuration saved to theme-config.zip.',
+        });
       });
     } else {
       toast({
@@ -175,7 +182,7 @@ export default function Header() {
                     </Label>
                     <Switch
                         id="dark-mode"
-                        checked={theme === 'dark'}
+                        checked={resolvedTheme === 'dark'}
                         onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                     />
                 </div>

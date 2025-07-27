@@ -50,13 +50,22 @@ export async function submitContactForm(
 
 export async function saveThemesToFile() {
   try {
-    const filePath = path.join(process.cwd(), 'src', 'app', 'globals.css');
-    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const globalsPath = path.join(process.cwd(), 'src', 'app', 'globals.css');
+    const tailwindPath = path.join(process.cwd(), 'tailwind.config.ts');
+
+    const globalsContent = await fs.readFile(globalsPath, 'utf-8');
+    const tailwindContent = await fs.readFile(tailwindPath, 'utf-8');
     
-    return { success: true, content: fileContent, filename: 'themes.css' };
+    return { 
+      success: true, 
+      files: [
+        { name: 'globals.css', content: globalsContent },
+        { name: 'tailwind.config.ts', content: tailwindContent }
+      ]
+    };
   } catch (error) {
-    console.error('Error saving themes:', error);
-    return { success: false, message: 'Failed to save themes.' };
+    console.error('Error reading theme files:', error);
+    return { success: false, message: 'Failed to read theme configuration files.' };
   }
 }
 

@@ -72,3 +72,34 @@ export async function loadThemesFromFile(fileContent: string) {
         return { success: false, message: 'Failed to load themes.' };
     }
 }
+
+export async function getThemes(): Promise<{ success: boolean, themes?: string[], message?: string }> {
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'app', 'globals.css');
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    
+    // A simple regex to find theme definitions like :root { ... } or .dark { ... }
+    const themeRegex = /(?<!\S)([\w.-]+)\s*\{[^{}]*--background:[^{}]*}/g;
+    
+    const themes: string[] = [];
+    let match;
+    while ((match = themeRegex.exec(fileContent)) !== null) {
+      let themeName = match[1].trim();
+      if (themeName === ':root') {
+        themeName = 'light';
+      } else if (themeName.startsWith('.')) {
+        themeName = themeName.substring(1);
+      }
+      themes.push(themeName);
+    }
+
+    if (themes.length === 0) {
+      return { success: false, message: 'No themes found.' };
+    }
+
+    return { success: true, themes };
+  } catch (error) {
+    console.error('Error getting themes:', error);
+    return { success: false, message: 'Failed to get themes.' };
+  }
+}

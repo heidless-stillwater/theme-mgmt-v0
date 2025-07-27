@@ -69,14 +69,30 @@ export async function saveThemesToFile() {
   }
 }
 
-export async function loadThemesFromFile(fileContent: string) {
+const themeFilesSchema = z.object({
+  globals: z.string(),
+  tailwind: z.string(),
+});
+
+export async function loadThemesFromFile(fileContents: { globals: string; tailwind: string }) {
     try {
-        const filePath = path.join(process.cwd(), 'src', 'app', 'globals.css');
-        await fs.writeFile(filePath, fileContent, 'utf-8');
+        const parsedContents = themeFilesSchema.safeParse(fileContents);
+        if (!parsedContents.success) {
+            return { success: false, message: 'Invalid file contents.' };
+        }
+
+        const { globals, tailwind } = parsedContents.data;
+        
+        const globalsPath = path.join(process.cwd(), 'src', 'app', 'globals.css');
+        const tailwindPath = path.join(process.cwd(), 'tailwind.config.ts');
+        
+        await fs.writeFile(globalsPath, globals, 'utf-8');
+        await fs.writeFile(tailwindPath, tailwind, 'utf-8');
+        
         return { success: true, message: 'Themes loaded successfully. Please refresh the page to see the changes.' };
     } catch (error) {
         console.error('Error loading themes:', error);
-        return { success: false, message: 'Failed to load themes.' };
+        return { success: false, message: 'Failed to load and apply theme files.' };
     }
 }
 

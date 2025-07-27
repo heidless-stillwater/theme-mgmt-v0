@@ -111,26 +111,44 @@ export default function Header() {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const content = e.target?.result as string;
-        const result = await loadThemesFromFile(content);
-         if (result.success) {
+      const zip = new JSZip();
+      try {
+        const loadedZip = await zip.loadAsync(file);
+        const globalsFile = loadedZip.file('globals.css');
+        const tailwindFile = loadedZip.file('tailwind.config.ts');
+
+        if (!globalsFile || !tailwindFile) {
+          throw new Error('Zip file must contain globals.css and tailwind.config.ts');
+        }
+
+        const globalsContent = await globalsFile.async('string');
+        const tailwindContent = await tailwindFile.async('string');
+        
+        const result = await loadThemesFromFile({
+            globals: globalsContent,
+            tailwind: tailwindContent,
+        });
+
+        if (result.success) {
             toast({
                 title: 'Success!',
                 description: result.message,
             });
-            // Force a reload to apply the new CSS file content
             window.location.reload();
         } else {
-             toast({
-                title: 'Error!',
-                description: result.message,
-                variant: 'destructive'
-            });
+            throw new Error(result.message || 'Failed to apply themes.');
         }
-      };
-      reader.readAsText(file);
+      } catch (error) {
+        let message = 'An unknown error occurred.';
+        if (error instanceof Error) {
+            message = error.message;
+        }
+        toast({
+            title: 'Error!',
+            description: message,
+            variant: 'destructive'
+        });
+      }
     }
     if(fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -221,7 +239,7 @@ export default function Header() {
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
-              accept=".css"
+              accept=".zip"
             />
 
 

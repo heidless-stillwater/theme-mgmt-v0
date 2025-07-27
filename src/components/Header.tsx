@@ -35,23 +35,23 @@ const navLinks = [
 
 const themes = [
     { name: "default", primary: "hsl(231 48% 48%)", accent: "hsl(36 100% 62%)" },
-    { name: "red", primary: "hsl(0 72% 51%)", accent: "hsl(0 86% 91%)" },
-    { name: "orange", primary: "hsl(25 95% 53%)", accent: "hsl(25 97% 88%)" },
-    { name: "amber", primary: "hsl(38 92% 50%)", accent: "hsl(45 93% 85%)" },
-    { name: "yellow", primary: "hsl(48 96% 50%)", accent: "hsl(54 96% 85%)" },
-    { name: "lime", primary: "hsl(84 79% 45%)", accent: "hsl(90 80% 88%)" },
-    { name: "green", primary: "hsl(142 76% 36%)", accent: "hsl(142 60% 88%)" },
-    { name: "emerald", primary: "hsl(158 79% 42%)", accent: "hsl(158 65% 88%)" },
-    { name: "teal", primary: "hsl(172 80% 38%)", accent: "hsl(172 70% 88%)" },
-    { name: "cyan", primary: "hsl(190 95% 45%)", accent: "hsl(190 85% 90%)" },
-    { name: "sky", primary: "hsl(204 94% 48%)", accent: "hsl(204 90% 90%)" },
-    { name: "blue", primary: "hsl(217 91% 60%)", accent: "hsl(217 95% 92%)" },
-    { name: "indigo", primary: "hsl(240 82% 60%)", accent: "hsl(240 85% 92%)" },
-    { name: "violet", primary: "hsl(262 88% 65%)", accent: "hsl(262 90% 92%)" },
-    { name: "purple", primary: "hsl(271 91% 65%)", accent: "hsl(271 94% 92%)" },
-    { name: "fuchsia", primary: "hsl(291 84% 60%)", accent: "hsl(291 88% 92%)" },
-    { name: "pink", primary: "hsl(322 84% 60%)", accent: "hsl(322 88% 92%)" },
-    { name: "rose", primary: "hsl(340 82% 60%)", accent: "hsl(340 86% 92%)" }
+    { name: "red", primary: "hsl(0 72% 51%)", accent: "hsl(0 86% 97%)" },
+    { name: "orange", primary: "hsl(25 95% 53%)", accent: "hsl(25 97% 94%)" },
+    { name: "amber", primary: "hsl(38 92% 50%)", accent: "hsl(45 93% 90%)" },
+    { name: "yellow", primary: "hsl(48 96% 50%)", accent: "hsl(54 96% 90%)" },
+    { name: "lime", primary: "hsl(84 79% 45%)", accent: "hsl(90 80% 94%)" },
+    { name: "green", primary: "hsl(142 76% 36%)", accent: "hsl(142 60% 94%)" },
+    { name: "emerald", primary: "hsl(158 79% 42%)", accent: "hsl(158 65% 94%)" },
+    { name: "teal", primary: "hsl(172 80% 38%)", accent: "hsl(172 70% 94%)" },
+    { name: "cyan", primary: "hsl(190 95% 45%)", accent: "hsl(190 85% 95%)" },
+    { name: "sky", primary: "hsl(204 94% 48%)", accent: "hsl(204 90% 95%)" },
+    { name: "blue", primary: "hsl(217 91% 60%)", accent: "hsl(217 95% 96%)" },
+    { name: "indigo", primary: "hsl(240 82% 60%)", accent: "hsl(240 85% 96%)" },
+    { name: "violet", primary: "hsl(262 88% 65%)", accent: "hsl(262 90% 96%)" },
+    { name: "purple", primary: "hsl(271 91% 65%)", accent: "hsl(271 94% 96%)" },
+    { name: "fuchsia", primary: "hsl(291 84% 60%)", accent: "hsl(291 88% 96%)" },
+    { name: "pink", primary: "hsl(322 84% 60%)", accent: "hsl(322 88% 96%)" },
+    { name: "rose", primary: "hsl(340 82% 60%)", accent: "hsl(340 86% 96%)" }
 ];
 
 
@@ -189,6 +189,7 @@ export default function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
+                        <ColorfulThemeIcon primary='hsl(var(--primary))' accent='hsl(var(--accent))' className="mr-2" />
                         <span>Color Themes</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>

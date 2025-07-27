@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Wrench, Fingerprint, Brain, Fish, Activity } from 'lucide-react';
+import { Menu, Wrench, Fingerprint, Brain, Fish, Activity, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,11 +12,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
 } from '@/components/ui/dropdown-menu';
 import { saveThemesToFile, loadThemesFromFile } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeListModal } from '@/components/ThemeListModal';
-import { ThemeModeToggle } from './ThemeModeToggle';
+import { useTheme } from 'next-themes';
 
 
 const navLinks = [
@@ -27,12 +30,17 @@ const navLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
+const themes = [
+    "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"
+]
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const pathname = usePathname();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { setTheme } = useTheme();
 
   const handleSaveThemes = async () => {
     const result = await saveThemesToFile();
@@ -118,8 +126,6 @@ export default function Header() {
             <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="/contact">Start Here</Link>
             </Button>
-            
-            <ThemeModeToggle />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -142,6 +148,28 @@ export default function Header() {
                   <Fish className="mr-2 h-4 w-4" />
                   <span>Load Themes</span>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                 <DropdownMenuItem onClick={() => setTheme('light')}>
+                    <Sun className="mr-2 h-4 w-4" />
+                    <span>Light</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                    <Moon className="mr-2 h-4 w-4" />
+                    <span>Dark</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                        <span>Colorful</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                        {themes.map((theme) => (
+                            <DropdownMenuItem key={theme} onClick={() => setTheme(theme)} className="capitalize">
+                                {theme}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuSubContent>
+                </DropdownMenuSub>
               </DropdownMenuContent>
             </DropdownMenu>
             <input
